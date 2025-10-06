@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea de Tiempo - Primera Fase de Lactancia en Vacas Lecheras</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dcfce7 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #1e40af;
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            color: #6b7280;
+            font-size: 1.1em;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, #475569, #16a34a, #0d9488);
+        }
+        
+        .fase {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .fase::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid;
+            z-index: 10;
+        }
+        
+        .fase-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-left: 40px;
+        }
+        
+        .fase-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .fase-header h2 {
+            font-size: 1.5em;
+        }
+        
+        .fase-duracion {
+            background: rgba(255,255,255,0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .fase-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .section {
+            border-left: 4px solid;
+            padding-left: 15px;
+        }
+        
+        .section h3 {
+            font-size: 1.1em;
+            color: #374151;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section ul {
+            list-style: none;
+        }
+        
+        .section li {
+            padding: 5px 0;
+            font-size: 0.95em;
+            color: #4b5563;
+        }
+        
+        .section li::before {
+            content: '• ';
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .fase-1::before { border-color: #475569; }
+        .fase-1 .fase-header { background: #475569; }
+        
+        .fase-2::before { border-color: #d97706; }
+        .fase-2 .fase-header { background: #d97706; }
+        
+        .fase-3::before { border-color: #dc2626; }
+        .fase-3 .fase-header { background: #dc2626; }
+        
+        .fase-4::before { border-color: #f97316; }
+        .fase-4 .fase-header { background: #f97316; }
+        
+        .fase-5::before { border-color: #eab308; }
+        .fase-5 .fase-header { background: #eab308; }
+        
+        .fase-6::before { border-color: #16a34a; }
+        .fase-6 .fase-header { background: #16a34a; }
+        
+        .fase-7::before { border-color: #10b981; }
+        .fase-7 .fase-header { background: #10b981; }
+        
+        .fase-8::before { border-color: #0d9488; }
+        .fase-8 .fase-header { background: #0d9488; }
+        
+        .section-hitos { border-color: #3b82f6; }
+        .section-hitos li::before { color: #3b82f6; }
+        
+        .section-nutricion { border-color: #16a34a; }
+        .section-nutricion li::before { color: #16a34a; }
+        
+        .section-manejo { border-color: #9333ea; }
+        .section-manejo li::before { color: #9333ea; }
+        
+        .section-enfermedades { border-color: #dc2626; }
+        .section-enfermedades li::before { color: #dc2626; }
+        
+        .section-metas { border-color: #f97316; }
+        .section-metas li::before { color: #f97316; }
+        
+        .section-reproductivo { border-color: #ec4899; }
+        .section-reproductivo li::before { color: #ec4899; }
+        
+        .section-decisiones { border-color: #6366f1; }
+        .section-decisiones li::before { color: #6366f1; }
+        
+        .indicadores {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .indicadores h2 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        
+        .indicadores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .nota {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .nota p {
+            color: #1f2937;
+            font-size: 0.95em;
+        }
+        
+        .nota strong {
+            color: #1e40af;
+        }
+        
+        @media (max-width: 768px) {
+            .fase-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+                </svg>
+                Línea de Tiempo de Lactancia en Vacas Lecheras
+            </h1>
+            <p>Ciclo completo: Del período seco hasta el siguiente secado (aproximadamente 400 días)</p>
+        </div>
+
+        <div class="timeline">
+            <div class="fase fase-1">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>PERÍODO SECO</h2>
+                        <span class="fase-duracion">45-70 días</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Regeneración del tejido mamario</li>
+                                <li>Recuperación del sistema digestivo</li>
+                                <li>Restauración de reservas corporales</li>
+                                <li>Tratamiento de enfermedades</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Consumo MS: 13-15 kg/día (2.0-2.2% PV para 680kg)</li>
+                                <li>12% Proteína Bruta</li>
+                                <li>22% Fibra Cruda</li>
+                                <li>0.57 Mcal/lb ENL</li>
+                                <li>Minerales: Ca 0.39%, P 0.24%</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Dividir en 2 grupos</li>
+                                <li>CC objetivo: 3.0-3.5</li>
+                                <li>Tratamiento antibiótico al secado</li>
+                                <li>Vigilancia de ubre 2x/día por 10 días</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-2">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>PREPARTO</h2>
+                        <span class="fase-duracion">21 días</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Preparación ruminal (crecimiento papilas)</li>
+                                <li>Ajuste condición corporal</li>
+                                <li>Prevención hipocalcemia</li>
+                                <li>Adaptación a dieta alta en energía</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Consumo MS: 10-12 kg/día (1.5-1.8% PV para 680kg)</li>
+                                <li>Consumo reducido preparto normal</li>
+                                <li>Aumentar concentrados gradualmente</li>
+                                <li>14-16% Proteína</li>
+                                <li>Alta densidad energética</li>
+                                <li>Suplementación mineral (Ca, Mg, P)</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Alimentación con concentrados</li>
+                                <li>Monitoreo diario temperatura corporal</li>
+                                <li>Espacio comedero: mayor a 0.76m/vaca</li>
+                                <li>2 fuentes de agua fresca por corral</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-3">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>PARTO</h2>
+                        <span class="fase-duracion">Día 0</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Evento de mayor estrés metabólico</li>
+                                <li>Inicio de lactogénesis</li>
+                                <li>Mayor riesgo enfermedades</li>
+                                <li>Cambio de +30 Mcal en requerimientos</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Requerimientos: 14.5 a 28.8 Mcal</li>
+                                <li>Cambio drástico: equivalente a correr maratón</li>
+                                <li>Inicio movilización de reservas</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Vigilancia intensiva 72h</li>
+                                <li>Verificar expulsión placenta (menor a 12h)</li>
+                                <li>Monitoreo signos metritis</li>
+                                <li>Evaluación calostro y consumo</li>
+                            </ul>
+                        </div>
+                        <div class="section section-enfermedades">
+                            <h3>Riesgos Principales</h3>
+                            <ul>
+                                <li>Fiebre de leche (hipocalcemia)</li>
+                                <li>Retención placentaria</li>
+                                <li>Metritis</li>
+                                <li>Cetosis</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-4">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>POSPARTO</h2>
+                        <span class="fase-duracion">21 días</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Balance Energético Negativo (BEN) máximo</li>
+                                <li>Período crítico enfermedades (70% ocurren aquí)</li>
+                                <li>Inicio recuperación uterina</li>
+                                <li>Consumo MS mínimo</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Consumo MS: 11-13 kg/día (1.7-2.0% PV para 680kg)</li>
+                                <li>Recuperación del consumo progresiva</li>
+                                <li>17% Proteína Bruta</li>
+                                <li>15% Fibra Cruda</li>
+                                <li>0.78 Mcal/lb ENL</li>
+                                <li>Máxima densidad nutricional</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Monitoreo NEFA y BHBA</li>
+                                <li>Prevención cetosis subclínica</li>
+                                <li>Evaluación metritis días 4-12</li>
+                                <li>Control temperatura diaria</li>
+                            </ul>
+                        </div>
+                        <div class="section section-metas">
+                            <h3>Metas y Monitoreo</h3>
+                            <ul>
+                                <li>NEFA preparto menor a 0.3 mEq/L</li>
+                                <li>BHBA posparto menor a 10 mg/dL</li>
+                                <li>Temperatura menor a 39 grados C</li>
+                                <li>Descarga vaginal sin mal olor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-5">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>FIN TRANSICIÓN</h2>
+                        <span class="fase-duracion">22-60 días</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Recuperación consumo MS</li>
+                                <li>Reducción BEN</li>
+                                <li>Establecimiento curva lactancia</li>
+                                <li>Preparación para pico</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Consumo MS: 20-24 kg/día (3-3.5% PV para 680kg)</li>
+                                <li>Energía: mantener densidad alta</li>
+                                <li>Relación Forraje:Concentrado ajustada</li>
+                                <li>Monitoreo relación Grasa:Proteína (1.5)</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Agrupación según producción</li>
+                                <li>Transición a dieta lactancia temprana</li>
+                                <li>Inicio protocolo reproductivo</li>
+                                <li>Evaluación condición corporal semanal</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-6">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>PICO DE LACTANCIA</h2>
+                        <span class="fase-duracion">60-100 DEL</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Máxima producción de leche</li>
+                                <li>50% de producción total en primeros 120 DEL</li>
+                                <li>Mayor eficiencia conversión alimenticia</li>
+                                <li>Definición de persistencia</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Máximo consumo MS: 24-27 kg/día (3.5-4% PV para 680kg)</li>
+                                <li>Relación leche:alimento óptima (1.00-1.15)</li>
+                                <li>Balance energía positivo</li>
+                                <li>Proteína: 17-18%</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Metas de pico según lactancia</li>
+                                <li>Novillas: 30-35% sobre producción previa</li>
+                                <li>2a lactancia: 20% mayor que 1a</li>
+                                <li>3a+ lactancia: 28% mayor que 2a</li>
+                                <li>Persistencia objetivo: mayor a 92%</li>
+                            </ul>
+                        </div>
+                        <div class="section section-metas">
+                            <h3>Metas y Monitoreo</h3>
+                            <ul>
+                                <li>CC objetivo: 2.5-3.0</li>
+                                <li>No perder mayor a 1 punto CC</li>
+                                <li>Locomotion score menor o igual a 2: mayor a 90%</li>
+                                <li>Grasa leche mayor o igual a 3.5%</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-7">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>100-200 DEL</h2>
+                        <span class="fase-duracion">100 días</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Persistencia de lactancia</li>
+                                <li>Recuperación reproductiva</li>
+                                <li>Gestación establecida</li>
+                                <li>Reducción gradual producción</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Consumo MS: 18-22 kg/día (2.7-3.2% PV para 680kg)</li>
+                                <li>Ajuste según respuesta productiva</li>
+                                <li>Reducción concentrados si menor a 2.5-3 L/kg</li>
+                                <li>Énfasis en forraje de calidad</li>
+                                <li>Monitoreo MUN: 10-12 mg/dL</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Meta persistencia: menor a 8% declinación/mes</li>
+                                <li>Confirmación gestación mayor a 150 días</li>
+                                <li>Mantener mayor a 60% del pico</li>
+                                <li>Reducir densidad si gestante</li>
+                            </ul>
+                        </div>
+                        <div class="section section-reproductivo">
+                            <h3>Manejo Reproductivo</h3>
+                            <ul>
+                                <li>Tasa de preñez mayor a 25% a 21 días</li>
+                                <li>Servicios/concepción menor a 2.5</li>
+                                <li>Días abiertos objetivo: menor a 120</li>
+                                <li>Protocolo IATF si necesario</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fase fase-8">
+                <div class="fase-card">
+                    <div class="fase-header">
+                        <h2>200 DEL - SECADO</h2>
+                        <span class="fase-duracion">105-165 días</span>
+                    </div>
+                    <div class="fase-content">
+                        <div class="section section-hitos">
+                            <h3>Hitos Principales</h3>
+                            <ul>
+                                <li>Fase de persistencia tardía</li>
+                                <li>Desarrollo fetal acelerado (3er trimestre)</li>
+                                <li>Preparación para próxima lactancia</li>
+                                <li>Decisión de secado</li>
+                            </ul>
+                        </div>
+                        <div class="section section-nutricion">
+                            <h3>Nutrición</h3>
+                            <ul>
+                                <li>Consumo MS: 16-20 kg/día (2.4-2.9% PV para 680kg)</li>
+                                <li>Gestación avanzada: +3-5 Mcal ENL/día</li>
+                                <li>+200-300g PB/día (feto)</li>
+                                <li>Reducir concentrado gradualmente</li>
+                                <li>CC objetivo: 3.0</li>
+                            </ul>
+                        </div>
+                        <div class="section section-manejo">
+                            <h3>Manejo</h3>
+                            <ul>
+                                <li>Criterios de secado:</li>
+                                <li>Producción menor a 12-15 L/día</li>
+                                <li>Gestación mayor a 150 días confirmada</li>
+                                <li>Período seco mínimo 45-60 días</li>
+                                <li>Persistencia menor a 85%/mes</li>
+                            </ul>
+                        </div>
+                        <div class="section section-decisiones">
+                            <h3>Decisiones Críticas</h3>
+                            <ul>
+                                <li>Secar si rentabilidad marginal negativa</li>
+                                <li>Método abrupto: menor a 15 L/día</li>
+                                <li>Método gradual: mayor a 20 L/día</li>
+                                <li>Tratamiento antibiótico intramamario</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="indicadores">
+            <h2>Indicadores Clave de Éxito</h2>
+            <div class="indicadores-grid">
+                <div class="section section-hitos">
+                    <h3>Productivos</h3>
+                    <ul>
+                        <li>Persistencia: menor a 8% declinación/mes</li>
+                        <li>Producción acumulada: 7000-9000 L</li>
+                        <li>Duración lactancia: 305-365 días</li>
+                        <li>Eficiencia: mayor o igual a 1.5 L leche/kg MS</li>
+                    </ul>
+                </div>
+                <div class="section section-nutricion">
+                    <h3>Reproductivos</h3>
+                    <ul>
+                        <li>Tasa preñez 21d: mayor a 25%</li>
+                        <li>Días abiertos: menor a 120</li>
+                        <li>Servicios/concepción: menor a 2.5</li>
+                        <li>Tasa descarte: menor a 25% anual</li>
+                    </ul>
+                </div>
+                <div class="section section-metas">
+                    <h3>Salud</h3>
+                    <ul>
+                        <li>Incidencia cetosis: menor a 15%</li>
+                        <li>Metritis: menor a 15%</li>
+                        <li>Desplazamiento abomaso: menor a 3%</li>
+                        <li>CC al parto: 3.0-3.5</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="nota">
+            <p><strong>Nota crítica:</strong> El 50% de la producción total de la lactancia ocurre en los primeros 120 DEL. 
+            El manejo nutricional y sanitario durante el período de transición (60 días preparto a 21 días posparto) 
+            determina el éxito productivo y reproductivo de toda la lactancia.</p>
+        </div>
+    </div>
+</body>
+</html>
