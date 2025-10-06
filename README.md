@@ -1,4 +1,4 @@
-Con base en la información del proyecto de conocimiento sobre el curso de nutrición de vacas lecheras, cree un gráfico de línea de tiempo completo y detallado de la primera fase de lactancia.He creado un gráfico interactivo completo de la línea de tiempo de la primera fase de lactancia en vacas lecheras. El gráfico incluye:
+Con base en el curso de nutrición de vacas lecheras, cree un gráfico de línea de tiempo completo y detallado de la primera fase de lactancia.He creado un gráfico interactivo completo de la línea de tiempo de la primera fase de lactancia en vacas lecheras. El gráfico incluye:
 
 ## Características principales:
 
